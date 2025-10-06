@@ -15,7 +15,8 @@ import 'app_state.dart'; // make sure this import exists
 
 // global key to control the MainScaffold from pages (so we can switch tabs and push routes
 // from the scaffold's context, preserving the bottom bar and correct navigation stack)
-final GlobalKey<_MainScaffoldState> mainScaffoldKey = GlobalKey<_MainScaffoldState>();
+final GlobalKey<_MainScaffoldState> mainScaffoldKey =
+    GlobalKey<_MainScaffoldState>();
 
 void main() {
   runApp(const MyApp());
@@ -96,10 +97,11 @@ class _MainScaffoldState extends State<MainScaffold> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (_) => CurrentRecipeView(
-                  recipeId: info['id'] ?? '',
-                  title: info['title'] ?? '',
-                ),
+                builder:
+                    (_) => CurrentRecipeView(
+                      recipeId: info['id'] ?? '',
+                      title: info['title'] ?? '',
+                    ),
               ),
             );
             return;
@@ -108,11 +110,20 @@ class _MainScaffoldState extends State<MainScaffold> {
           appState.switchTab(index);
         },
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.restaurant_menu), label: "Danas"),
-          BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: "Istorija"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.restaurant_menu),
+            label: "Danas",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: "Istorija",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.book), label: "Recepti"),
           BottomNavigationBarItem(icon: Icon(Icons.kitchen), label: "Frizider"),
-          BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: "Kupovina"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: "Kupovina",
+          ),
         ],
       ),
     );
@@ -128,18 +139,25 @@ class TodaysMenuPage extends StatelessWidget {
     final TextEditingController nameController = TextEditingController();
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Dodaj novi recept'),
-        content: TextField(
-          controller: nameController,
-          autofocus: true,
-          decoration: const InputDecoration(labelText: 'Naziv recepta'),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Otkaži')),
-          ElevatedButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Dodaj')),
-        ],
-      ),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Dodaj novi recept'),
+            content: TextField(
+              controller: nameController,
+              autofocus: true,
+              decoration: const InputDecoration(labelText: 'Naziv recepta'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: const Text('Otkaži'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(ctx).pop(true),
+                child: const Text('Dodaj'),
+              ),
+            ],
+          ),
     );
 
     if (ok != true) {
@@ -187,7 +205,9 @@ class TodaysMenuPage extends StatelessWidget {
       final pushCtx = mainScaffoldKey.currentContext ?? context;
       if (!pushCtx.mounted) return;
       Navigator.of(pushCtx).push(
-        MaterialPageRoute(builder: (_) => CurrentRecipePage(recipeId: id, title: name)),
+        MaterialPageRoute(
+          builder: (_) => CurrentRecipePage(recipeId: id, title: name),
+        ),
       );
     });
   }
@@ -203,14 +223,16 @@ class TodaysMenuPage extends StatelessWidget {
         title: const Text(
           "Današnji meni",
           style: TextStyle(
-          color: Colors.black,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),),
+            color: Colors.black,
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        systemOverlayStyle: 
-            SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent),
+        systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
+          statusBarColor: Colors.transparent,
+        ),
         iconTheme: const IconThemeData(color: Colors.black),
         titleTextStyle: TextStyle(color: Colors.black, fontSize: 20),
       ),
@@ -218,17 +240,23 @@ class TodaysMenuPage extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           // Background image (downscaled)
-          Builder(builder: (ctx) {
-            final mq = MediaQuery.of(ctx);
-            final int cacheWidth = (mq.size.width * mq.devicePixelRatio / 1.5).toInt();
-            return Image(
-              image: ResizeImage(const AssetImage("assets/images/kitchen_background.jpg"),
-                  width: cacheWidth),
-              fit: BoxFit.cover,
-              filterQuality: FilterQuality.medium,
-              errorBuilder: (c, e, st) => Container(color: Colors.grey.shade900),
-            );
-          }),
+          Builder(
+            builder: (ctx) {
+              final mq = MediaQuery.of(ctx);
+              final int cacheWidth =
+                  (mq.size.width * mq.devicePixelRatio / 1.5).toInt();
+              return Image(
+                image: ResizeImage(
+                  const AssetImage("assets/images/kitchen_background.jpg"),
+                  width: cacheWidth,
+                ),
+                fit: BoxFit.cover,
+                filterQuality: FilterQuality.medium,
+                errorBuilder:
+                    (c, e, st) => Container(color: Colors.grey.shade900),
+              );
+            },
+          ),
 
           // blur the background
           Positioned.fill(
@@ -280,12 +308,17 @@ class TodaysMenuPage extends StatelessWidget {
                       // open the dedicated MyRecipesView page instead of switching to the tab
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const MyRecipesView()),
+                        MaterialPageRoute(
+                          builder: (context) => const MyRecipesView(),
+                        ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.teal,
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 12,
+                      ),
                     ),
                     child: const Text(
                       "Izaberi recept",
@@ -307,7 +340,10 @@ class TodaysMenuPage extends StatelessWidget {
                     onPressed: () => _createRecipeFromMenu(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 12,
+                      ),
                     ),
                     child: const Text(
                       "Novi recept",
