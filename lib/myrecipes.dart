@@ -76,18 +76,25 @@ class _MyRecipesPageState extends State<MyRecipesPage> {
     _nameController.clear();
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Dodaj novi recept'),
-        content: TextField(
-          controller: _nameController,
-          autofocus: true,
-          decoration: const InputDecoration(labelText: 'Naziv recepta'),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Otkaži')),
-          ElevatedButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Kreiraj')),
-        ],
-      ),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Dodaj novi recept'),
+            content: TextField(
+              controller: _nameController,
+              autofocus: true,
+              decoration: const InputDecoration(labelText: 'Naziv recepta'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: const Text('Otkaži'),
+              ),
+              ElevatedButton(
+                onPressed: () => Navigator.of(ctx).pop(true),
+                child: const Text('Kreiraj'),
+              ),
+            ],
+          ),
     );
 
     if (ok != true) return;
@@ -135,9 +142,9 @@ class _MyRecipesPageState extends State<MyRecipesPage> {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text("Removed recipe: ${removed['name']}"),
+        content: Text("Uklonjen recept: ${removed['name']}"),
         action: SnackBarAction(
-          label: 'Undo',
+          label: 'Vrati',
           onPressed: () async {
             setState(() => _recipes.insert(index, removed));
             await _saveRecipes();
@@ -184,18 +191,22 @@ class _MyRecipesPageState extends State<MyRecipesPage> {
         fit: StackFit.expand,
         children: [
           // background image
-          Builder(builder: (ctx) {
-            final mq = MediaQuery.of(ctx);
-            final int cacheWidth = (mq.size.width * mq.devicePixelRatio).toInt();
-            return Image.asset(
-              'assets/images/recipes.jpg',
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: double.infinity,
-              cacheWidth: cacheWidth,
-              errorBuilder: (c, e, st) => Container(color: Colors.grey.shade200),
-            );
-          }),
+          Builder(
+            builder: (ctx) {
+              final mq = MediaQuery.of(ctx);
+              final int cacheWidth =
+                  (mq.size.width * mq.devicePixelRatio).toInt();
+              return Image.asset(
+                'assets/images/recipes.jpg',
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
+                cacheWidth: cacheWidth,
+                errorBuilder:
+                    (c, e, st) => Container(color: Colors.grey.shade200),
+              );
+            },
+          ),
 
           // reduce blur so the background is more visible but still soft
           Positioned.fill(
@@ -234,81 +245,99 @@ class _MyRecipesPageState extends State<MyRecipesPage> {
               title: const Text(
                 "Moji recepti",
                 style: TextStyle(
-                color: Colors.black,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),),
+                  color: Colors.black,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               backgroundColor: Colors.transparent,
               elevation: 0,
               shadowColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
-              systemOverlayStyle:
-                  SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent),
+              systemOverlayStyle: SystemUiOverlayStyle.dark.copyWith(
+                statusBarColor: Colors.transparent,
+              ),
               iconTheme: const IconThemeData(color: Colors.black),
               titleTextStyle: TextStyle(color: Colors.black, fontSize: 20),
               automaticallyImplyLeading: false,
-              leading: canPopNow
-                  ? IconButton(
-                      icon: const Icon(Icons.arrow_back),
-                      onPressed: () {
-                        if (Navigator.of(context).canPop()) Navigator.of(context).pop();
-                      },
-                    )
-                  : null,
+              leading:
+                  canPopNow
+                      ? IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () {
+                          if (Navigator.of(context).canPop())
+                            Navigator.of(context).pop();
+                        },
+                      )
+                      : null,
             ),
             body: SafeArea(
               top: true,
               bottom: true,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: _recipes.isEmpty
-                    ? _buildEmpty()
-                    : ListView.builder(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        itemCount: _recipes.length,
-                        itemBuilder: (ctx, i) {
-                          final r = _recipes[i];
-                          final idKey = r['id'] ?? 'recipe_$i';
-                          return Dismissible(
-                            key: ValueKey(idKey),
-                            direction: DismissDirection.endToStart, // right -> left
-                            background: Container(
-                              color: Colors.red,
-                              alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              child: const Icon(Icons.delete, color: Colors.white),
-                            ),
-                            onDismissed: (_) => _removeRecipeAt(i),
-                            child: Card(
-                              color: Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.grey.shade900.withOpacity(0.15)
-                                  : Colors.white.withOpacity(0.75),
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                              child: ListTile(
-                                title: Text(r['name'] ?? 'Recipe'),
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => CurrentRecipePage(
-                                        recipeId: r['id'] ?? 'recipe_$i',
-                                        title: r['name'] ?? 'Recipe',
-                                      ),
-                                    ),
-                                  );
-                                },
+                child:
+                    _recipes.isEmpty
+                        ? _buildEmpty()
+                        : ListView.builder(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          itemCount: _recipes.length,
+                          itemBuilder: (ctx, i) {
+                            final r = _recipes[i];
+                            final idKey = r['id'] ?? 'recipe_$i';
+                            return Dismissible(
+                              key: ValueKey(idKey),
+                              direction:
+                                  DismissDirection.endToStart, // right -> left
+                              background: Container(
+                                color: Colors.red,
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: const Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
+                              onDismissed: (_) => _removeRecipeAt(i),
+                              child: Card(
+                                color:
+                                    Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.grey.shade900.withOpacity(0.15)
+                                        : Colors.white.withOpacity(0.75),
+                                elevation: 2,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: ListTile(
+                                  title: Text(r['name'] ?? 'Recipe'),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) => CurrentRecipePage(
+                                              recipeId: r['id'] ?? 'recipe_$i',
+                                              title: r['name'] ?? 'Recipe',
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        ),
               ),
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: _createRecipeAndOpen,
               backgroundColor: Colors.white,
-              foregroundColor: Colors.black, // This will make the + icon black for better contrast
+              foregroundColor:
+                  Colors
+                      .black, // This will make the + icon black for better contrast
               child: const Icon(Icons.add),
             ),
           ),
